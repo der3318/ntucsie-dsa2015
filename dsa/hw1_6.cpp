@@ -49,7 +49,7 @@ int Times_Binary(int a, int b)
 	return times;
 }
 
-int* TimesAndGcd_Euclid(int a, int b)
+int TimesAndGcd_Euclid(int a, int b, int flag)
 {
 	int output[2] = {0, 0}, n = std::min(a, b), m = std::max(a, b);
 	while(m % n != 0)
@@ -60,7 +60,8 @@ int* TimesAndGcd_Euclid(int a, int b)
 		m = tmp;
 	}
 	output[GCD] = n;
-	return output;
+	if(flag == GCD)	return output[GCD];
+	else	return output[TIMES];
 }
 
 int main(void)
@@ -70,16 +71,16 @@ int main(void)
 	while(a != 0)	
 	{
 		std::cin >> b;
-		std::cout << "Case (" << a << ", " << b << "): GCD-By-Reverse-Search = " << (TimesAndGcd_Euclid(a, b))[GCD] 
+		std::cout << "Case (" << a << ", " << b << "): GCD-By-Reverse-Search = " << TimesAndGcd_Euclid(a, b, GCD) 
 			<< ", taking " << Times_ReverseSearch(a, b) << " iterations\n";
-		std::cout << "Case (" << a << ", " << b << "): GCD-By-Filter = " << (TimesAndGcd_Euclid(a, b))[GCD] 
+		std::cout << "Case (" << a << ", " << b << "): GCD-By-Filter = " << TimesAndGcd_Euclid(a, b, GCD)
 			<< ", taking " << Times_Filter(a, b) << " iterations\n";
-		std::cout << "Case (" << a << ", " << b << "): GCD-By-Filter-Faster = " << (TimesAndGcd_Euclid(a, b))[GCD] 
+		std::cout << "Case (" << a << ", " << b << "): GCD-By-Filter-Faster = " << TimesAndGcd_Euclid(a, b, GCD) 
 			<< ", taking " << Times_FilterFaster(a, b, 2) << " iterations\n";
-		std::cout << "Case (" << a << ", " << b << "): GCD-By-Binary = " << (TimesAndGcd_Euclid(a, b))[GCD] 
+		std::cout << "Case (" << a << ", " << b << "): GCD-By-Binary = " << TimesAndGcd_Euclid(a, b, GCD) 
 			<< ", taking " << Times_Binary(a, b) << " iterations\n";
-		std::cout << "Case (" << a << ", " << b << "): GCD-By-Euclid = " << (TimesAndGcd_Euclid(a, b))[GCD] 
-			<< ", taking " << (TimesAndGcd_Euclid(a, b))[TIMES] << " iterations\n";
+		std::cout << "Case (" << a << ", " << b << "): GCD-By-Euclid = " << TimesAndGcd_Euclid(a, b, GCD) 
+			<< ", taking " << TimesAndGcd_Euclid(a, b, TIMES) << " iterations\n";
 		std::cin >> a;
 	}
 	return 0;

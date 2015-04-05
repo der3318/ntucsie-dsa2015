@@ -1,5 +1,12 @@
 #include <vector>
 
+class Ans_Click
+{
+	public:
+		int ad;
+		int query;
+};
+
 class Line
 {
 	public:

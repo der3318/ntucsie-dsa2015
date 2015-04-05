@@ -17,4 +17,4 @@ clean:
 	rm -rf $(target)
 
 run:
-	./hw2_4
+	./$(target)

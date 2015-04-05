@@ -53,9 +53,9 @@ void Data::get(int& u, int& a, int& q, int& p, int& d)
 
 void Data::clicked(int& u)
 {
-	int n = 0, i = 0;
+	int n = 0;
 	Ans_Click *output = new Ans_Click[CLI_MAX];
-	for(i = user[u].line_start ; i <= user[u].line_end ; i++)
+	for(int i = user[u].line_start ; i <= user[u].line_end ; i++)
 	{
 		if(line[i].click == 0)	continue;
 		output[n].ad = line[i].ad;
@@ -63,8 +63,7 @@ void Data::clicked(int& u)
 		n++;
 	}
 	qsort(output, n, sizeof(output[0]), cmp);
-	printf("********************\n");
-	printf("%d %d\n", output[0].ad, output[i].query);
+	printf("********************\n%d %d\n", output[0].ad, output[0].query);
 	for(int i = 1 ; i < n ; i++)	if( !(output[i].ad == output[i - 1].ad && output[i].query == output[i - 1].query) )	printf("%d %d\n", output[i].ad, output[i].query);
 	printf("********************\n");
 	delete [] output;

@@ -17,9 +17,9 @@ int main(int argc,char *argv[])
 	}
 	Data mydata;
 	int i = 0;
-	printf("Now reading data...\n");	//hint
-	clock_t  clockBegin, clockEnd;	//time
-	clockBegin = clock();	//time
+	//printf("Now reading data...\n");	//hint
+	//clock_t  clockBegin, clockEnd;	//time
+	//clockBegin = clock();	//time
 	while(fscanf(fin, "%d%d%s%d%d%d%d%d%d%d%d%d", &mydata.line[i].click, &mydata.line[i].impression, mydata.line[i].URL, &mydata.line[i].ad, &mydata.line[i].advertiser, &mydata.line[i].depth, &mydata.line[i].position, &mydata.line[i].query, &mydata.line[i].keyword, &mydata.line[i].title, &mydata.line[i].description, &mydata.line[i].user) != EOF)
 	{
 		if(mydata.user[mydata.line[i].user].line_end == -1)
@@ -36,15 +36,15 @@ int main(int argc,char *argv[])
 		}
 		i++;
 	}
-	clockEnd = clock();	//time
-	printf("Successfully completed in %ld sec(s)! Actions are now available.( get / clicked / impressed / profit / quit )\n\n", (clockEnd - clockBegin) / 1000000);	//hint
+	//clockEnd = clock();	//time
+	//printf("Successfully completed in %ld sec(s)! Actions are now available.( get / clicked / impressed / profit / quit )\n\n", (clockEnd - clockBegin) / 1000000);	//hint
 	char command[20];
 	int u = 0, a = 0, q = 0, p = 0, d = 0, u_2 = 0;
 	double theta = 0;
 	while(1)
 	{
 		scanf("%s", command);
-		clockBegin = clock();	//time
+		//clockBegin = clock();	//time
 		if(strcmp(command, "quit") == 0)	break;
 		else if(strcmp(command, "get") == 0)
 		{
@@ -66,8 +66,8 @@ int main(int argc,char *argv[])
 			scanf("%d %lf", &a, &theta);
 			mydata.profit(a, theta);
 		}
-		clockEnd = clock();	//time
-		printf("Action \"%s\" takes %ld ms.\n\n", command, (clockEnd - clockBegin) / 1000);	//time
+		//clockEnd = clock();	//time
+		//printf("Action \"%s\" takes %ld ms.\n\n", command, (clockEnd - clockBegin) / 1000);	//time
 	}
 	return 0;
 }

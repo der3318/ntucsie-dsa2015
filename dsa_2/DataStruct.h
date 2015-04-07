@@ -1,12 +1,5 @@
 #include <vector>
 
-class Ans_Click
-{
-	public:
-		int ad;
-		int query;
-};
-
 class Line
 {
 	public:
@@ -21,7 +14,6 @@ class Line
 		int keyword;
 		int title;
 		int description;
-		int user;
 };
 
 class User
@@ -55,6 +47,8 @@ class Data
 		void clicked(int&);
 		void impressed(int&, int&);
 		void profit(int&, double&);
+
+		void find_properties(int&, int&, int&, int&, int&);
 };
 
-int cmp(const void*, const void*);
+int cmp_line(const void*, const void*);

@@ -8,10 +8,9 @@
 #include "DataStruct.h"
 
 #define LINE_MAX 150000000
-#define USER_MAX 100000000
-#define AD_MAX 100000000
+#define USER_MAX 30000000
+#define AD_MAX 30000000
 #define ANS_MAX 1000000
-#define CLI_MAX 50000000
 
 Data::Data()
 {
@@ -42,77 +41,51 @@ void Data::get(int& u, int& a, int& q, int& p, int& d)
 {
 	int click = 0, impression = 0;
 	for(int i = user[u].line_start ; i <= user[u].line_end ; i++)
+	{
 		if(line[i].ad == a && line[i].query == q && line[i].position == p && line[i].depth == d)
 		{
 			click += line[i].click;
 			impression += line[i].impression;
 		}
+	}
 	printf("********************\n%d %d\n********************\n", click, impression);
 	return;
 }
 
 void Data::clicked(int& u)
 {
-	int n = 0;
-	Ans_Click *output = new Ans_Click[CLI_MAX];
-	for(int i = user[u].line_start ; i <= user[u].line_end ; i++)
-	{
-		if(line[i].click == 0)	continue;
-		output[n].ad = line[i].ad;
-		output[n].query = line[i].query;
-		n++;
-	}
-	qsort(output, n, sizeof(output[0]), cmp);
-	printf("********************\n%d %d\n", output[0].ad, output[0].query);
-	for(int i = 1 ; i < n ; i++)	if( !(output[i].ad == output[i - 1].ad && output[i].query == output[i - 1].query) )	printf("%d %d\n", output[i].ad, output[i].query);
 	printf("********************\n");
-	delete [] output;
+	int pre_ad = -1, pre_query = -1;
+	for(int i = user[u].line_start ; i <= user[u].line_end ; i++)
+		if(line[i].click != 0 && !(line[i].ad == pre_ad && line[i].query == pre_query))
+		{
+			printf("%d %d\n", line[i].ad, line[i].query);
+			pre_ad = line[i].ad;
+			pre_query = line[i].query;
+		}
+	printf("********************\n");
 	return;
 }
 
 void Data::impressed(int& u, int& u_2)
 {
-	int output[ANS_MAX] = {0}, n = 0;
+	int output[ANS_MAX] = {0}, n = 0, j_tmp = user[u_2].line_start, u_tmp = user[u].line_start, u2_tmp = user[u_2].line_start;
 	for(int i = user[u].line_start ; i <= user[u].line_end ; i++)
 	{
-		for(int j = user[u_2].line_start ; j <= user[u_2].line_end ; j++)	
+		if(i != 0 && line[i].ad == line[i - 1].ad)	continue;
+		for(int j = j_tmp ; j <= user[u_2].line_end ; j++)	
 			if(line[i].ad == line[j].ad)	
 			{
 				output[n++] = line[i].ad;
+				j_tmp = j;
 				break;
 			}
 	}
-	std::sort(output, output + n);
 	printf("********************\n");
 	for(int i = 0 ; i < n ; i++)
 	{
-		if(i > 0 && output[i] == output[i - 1])	continue;
 		printf("%d\n", output[i]);
-		std::vector<int> advertisers, keywords, titles, descriptions;
-		std::vector<std::string> URLs;
-		int size = 0;
-		for(int j = user[u].line_start ; j >= 0 ; j++)
-		{
-			if(j == user[u].line_end + 1)	j = user[u_2].line_start;
-			if(line[j].ad == output[i])
-			{
-				int k = 0;
-				std::string tmp(line[j].URL);
-				for(k = 0 ; k < size ; k++)
-					if(line[j].keyword == keywords.at(k) && line[j].title == titles.at(k) && line[j].description == descriptions.at(k) && line[j].advertiser == advertisers.at(k) && tmp == URLs.at(k))	break;
-				if(k == size)
-				{
-					printf("\t%s %d %d %d %d\n", line[j].URL, line[j].advertiser, line[j].keyword, line[j].title, line[j].description);
-					URLs.push_back(tmp);
-					advertisers.push_back(line[j].advertiser);
-					keywords.push_back(line[j].keyword);
-					titles.push_back(line[j].title);
-					descriptions.push_back(line[j].description);
-					size++;
-				}
-			}
-			if(j == user[u_2].line_end)	break;
-		}
+		find_properties(output[i], u, u_2, u_tmp, u2_tmp);
 	}
 	printf("********************\n");
 	return;
@@ -120,7 +93,8 @@ void Data::impressed(int& u, int& u_2)
 
 void Data::profit(int& a, double& rate)
 {
-	int output[ANS_MAX] = {0}, n = 0, size = ad[a].users.size();
+	int size = ad[a].users.size();
+	printf("********************\n");
 	for(int i = 0 ; i < size ; i++)
 	{
 		int c_sum = 0, i_sum = 0;
@@ -130,17 +104,72 @@ void Data::profit(int& a, double& rate)
 				c_sum += line[j].click;
 				i_sum += line[j].impression;
 			}
-		if( i_sum != 0 && ((double)c_sum / (double)i_sum) >= (rate - 0.00001) )	output[n++] = ad[a].users.at(i);
+		if( i_sum != 0 && ((double)c_sum / (double)i_sum) >= (rate - 0.00001) )	printf("%d\n", ad[a].users.at(i));
 	}
-	std::sort(output, output + n);
-	printf("********************\n");
-	for(int i = 0 ; i < n ; i++)	printf("%d\n", output[i]);
 	printf("********************\n");
 	return;
 }
 
-int cmp(const void *a, const void *b)
+int cmp_line(const void *a, const void *b)
 {
-	if( ((Ans_Click*)a)->ad == ((Ans_Click*)b)->ad )	return	((Ans_Click*)a)->query - ((Ans_Click*)b)->query;
-	return ((Ans_Click*)a)->ad - ((Ans_Click*)b)->ad;
+	if( ((Line*)a)->ad == ((Line*)b)->ad )	return ((Line*)a)->query - ((Line*)b)->query;
+	return ((Line*)a)->ad - ((Line*)b)->ad;
+}
+
+void Data::find_properties(int& ad_target, int& u, int& u_2, int& u_tmp, int& u2_tmp)
+{
+	std::vector<int> advertisers, keywords, titles, descriptions;
+	std::vector<std::string> URLs;
+	int size = 0;
+	for(int j = u_tmp ; j <= user[u].line_end  ; j++)
+	{
+		if(line[j].ad == ad_target)
+		{
+			std::string tmp(line[j].URL);
+			int k = 0;
+			for(k = 0 ; k < size ; k++)
+				if(line[j].keyword == keywords.at(k) && line[j].title == titles.at(k) && line[j].description == descriptions.at(k) && line[j].advertiser == advertisers.at(k) && tmp == URLs.at(k))	break;
+			if(k == size)
+			{
+				printf("\t%s %d %d %d %d\n", line[j].URL, line[j].advertiser, line[j].keyword, line[j].title, line[j].description);
+				URLs.push_back(tmp);
+				advertisers.push_back(line[j].advertiser);
+				keywords.push_back(line[j].keyword);
+				titles.push_back(line[j].title);
+				descriptions.push_back(line[j].description);
+				size++;
+			}
+		}
+		else if(line[j].ad > ad_target)
+		{
+			u_tmp = j;
+			break;
+		}
+	}
+	for(int j = u2_tmp ; j <= user[u_2].line_end  ; j++)
+	{
+		if(line[j].ad == ad_target)
+		{
+			std::string tmp(line[j].URL);
+			int k = 0;
+			for(k = 0 ; k < size ; k++)
+				if(line[j].keyword == keywords.at(k) && line[j].title == titles.at(k) && line[j].description == descriptions.at(k) && line[j].advertiser == advertisers.at(k) && tmp == URLs.at(k))	break;
+			if(k == size)
+			{
+				printf("\t%s %d %d %d %d\n", line[j].URL, line[j].advertiser, line[j].keyword, line[j].title, line[j].description);
+				URLs.push_back(tmp);
+				advertisers.push_back(line[j].advertiser);
+				keywords.push_back(line[j].keyword);
+				titles.push_back(line[j].title);
+				descriptions.push_back(line[j].description);
+				size++;
+			}
+		}
+		else if(line[j].ad > ad_target)
+		{
+			u2_tmp = j;
+			break;
+		}
+	}
+	return;
 }

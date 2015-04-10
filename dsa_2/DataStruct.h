@@ -5,7 +5,7 @@ class Line
 	public:
 		int click;
 		int impression;
-		char URL[21];
+		unsigned long long URL;
 		int ad;
 		int advertiser;
 		int depth;
@@ -14,6 +14,7 @@ class Line
 		int keyword;
 		int title;
 		int description;
+		int user;
 };
 
 class User

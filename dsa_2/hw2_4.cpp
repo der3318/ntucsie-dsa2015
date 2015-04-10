@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "DataStruct.h"
+#include <omp.h>
+#include "MapRead.h"
 
 #define MAX 150000000
 #define USER_MAX 30000000
@@ -12,38 +13,36 @@
 
 int main(int argc,char *argv[])
 {
-	FILE *fin = fopen(argv[1], "r");
-	if(NULL == fin)
-	{
-		printf("Fail to access the file.\n");
-		return 1;
-	}
 	Data mydata;
-	int i = 0, user = 0;
 	printf("Now reading data...\n");	//hint
 	clock_t  clockBegin, clockEnd;	//time
 	clockBegin = clock();	//time
-	while(fscanf(fin, "%d%d%s%d%d%d%d%d%d%d%d%d", &mydata.line[i].click, &mydata.line[i].impression, mydata.line[i].URL, &mydata.line[i].ad, &mydata.line[i].advertiser, &mydata.line[i].depth, &mydata.line[i].position, &mydata.line[i].query, &mydata.line[i].keyword, &mydata.line[i].title, &mydata.line[i].description, &user) != EOF)
+	int line = map_read(argv[1], mydata), i = 0;
+	if(line == -1)	return 1;
+	while(i != line)
 	{
-		if(mydata.user[user].line_end == -1)
+		if(mydata.user[ mydata.line[i].user ].line_end == -1)
 		{
-			mydata.user[user].line_start = i;
-			mydata.user[user].line_end = i;
-			mydata.ad[mydata.line[i].ad].users.push_back(user);
+			mydata.user[ mydata.line[i].user ].line_start = i;
+			mydata.user[ mydata.line[i].user ].line_end = i;
+			mydata.ad[mydata.line[i].ad].users.push_back(mydata.line[i].user);
 		}
 		else
 		{
-			(mydata.user[user].line_end)++;
-			if(mydata.ad[mydata.line[i].ad].users.empty() || mydata.ad[mydata.line[i].ad].users.back() != user)
-				mydata.ad[mydata.line[i].ad].users.push_back(user);
+			(mydata.user[ mydata.line[i].user ].line_end)++;
+			if(mydata.ad[mydata.line[i].ad].users.empty() || mydata.ad[mydata.line[i].ad].users.back() != mydata.line[i].user)
+				mydata.ad[mydata.line[i].ad].users.push_back(mydata.line[i].user);
 		}
 		i++;
 	}
 	clockEnd = clock();	//time
 	printf("Data 100%% loaded! Process successfully completed in %ld sec(s)!\nNow sorting data...\n", (clockEnd - clockBegin) / 1000000);	//hint
 	clockBegin = clock();	//time
-	for(i = 0 ; i < USER_MAX ; i++)	if(mydata.user[i].line_end != -1)	qsort(&mydata.line[ mydata.user[i].line_start ], mydata.user[i].line_end - mydata.user[i].line_start + 1, sizeof(mydata.line[0]), cmp_line);	
-	for(i = 0 ; i < AD_MAX ; i++)	std::sort(mydata.ad[i].users.begin(), mydata.ad[i].users.end());
+	#pragma parallel for
+	for(i = 0 ; i < USER_MAX ; i++)	if(mydata.user[i].line_end != -1)
+		qsort(&mydata.line[ mydata.user[i].line_start ], mydata.user[i].line_end - mydata.user[i].line_start + 1, sizeof(mydata.line[0]), cmp_line);	
+	for(i = 0 ; i < AD_MAX ; i++)
+		std::sort(mydata.ad[i].users.begin(), mydata.ad[i].users.end());
 	clockEnd = clock();	//time
 	printf("Data 100%% sorted! Process successfully completed in %ld sec(s)!\nActions are now available.( get / clicked / impressed / profit / quit )\n\n", (clockEnd - clockBegin) / 1000000);	//hint
 	char command[20];

@@ -8,7 +8,7 @@
 #define LINE_MAX 150000000
 #define USER_MAX 30000000
 #define AD_MAX 30000000
-#define ANS_MAX 1000000
+#define ANS_MAX 50000000
 
 Data::Data()
 {
@@ -39,13 +39,11 @@ void Data::get(int& u, int& a, int& q, int& p, int& d)
 {
 	int click = 0, impression = 0;
 	for(int i = user[u].line_start ; i <= user[u].line_end ; i++)
-	{
 		if(line[i].ad == a && line[i].query == q && line[i].position == p && line[i].depth == d)
 		{
 			click += line[i].click;
 			impression += line[i].impression;
 		}
-	}
 	printf("********************\n%d %d\n********************\n", click, impression);
 	return;
 }
@@ -67,7 +65,7 @@ void Data::clicked(int& u)
 
 void Data::impressed(int& u, int& u_2)
 {
-	int output[ANS_MAX] = {0}, n = 0, i = user[u].line_start, j = user[u_2].line_start, u_tmp = user[u].line_start, u2_tmp = user[u_2].line_start;
+	int *output= new int[ANS_MAX], n = 0, i = user[u].line_start, j = user[u_2].line_start, u_tmp = user[u].line_start, u2_tmp = user[u_2].line_start;
 	while (i <= user[u].line_end && j <= user[u_2].line_end){
 		if(line[i].ad < line[j].ad)	i++;
 		else if(line[i].ad > line[j].ad)	j++;
@@ -85,6 +83,7 @@ void Data::impressed(int& u, int& u_2)
 		find_properties(output[i], u, u_2, u_tmp, u2_tmp);
 	}
 	printf("********************\n");
+	delete [] output;
 	return;
 }
 
@@ -118,7 +117,7 @@ void Data::find_properties(int& ad_target, int& u, int& u_2, int& u_tmp, int& u2
 	std::vector<int> advertisers, keywords, titles, descriptions;
 	std::vector<unsigned long long> URLs;
 	int size = 0;
-	for(int j = u_tmp ; j <= user[u].line_end  ; j++)
+	for(int j = u_tmp ; j <= user[u].line_end ; j++)
 	{
 		if(line[j].ad == ad_target)
 		{
@@ -142,7 +141,7 @@ void Data::find_properties(int& ad_target, int& u, int& u_2, int& u_tmp, int& u2
 			break;
 		}
 	}
-	for(int j = u2_tmp ; j <= user[u_2].line_end  ; j++)
+	for(int j = u2_tmp ; j <= user[u_2].line_end ; j++)
 	{
 		if(line[j].ad == ad_target)
 		{

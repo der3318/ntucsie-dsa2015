@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <omp.h>
 #include "MapRead.h"
 
 #define MAX 150000000
@@ -38,7 +37,6 @@ int main(int argc,char *argv[])
 	clockEnd = clock();	//time
 	printf("Data 100%% loaded! Process successfully completed in %ld sec(s)!\nNow sorting data...\n", (clockEnd - clockBegin) / 1000000);	//hint
 	clockBegin = clock();	//time
-	#pragma parallel for
 	for(i = 0 ; i < USER_MAX ; i++)	if(mydata.user[i].line_end != -1)
 		qsort(&mydata.line[ mydata.user[i].line_start ], mydata.user[i].line_end - mydata.user[i].line_start + 1, sizeof(mydata.line[0]), cmp_line);	
 	for(i = 0 ; i < AD_MAX ; i++)

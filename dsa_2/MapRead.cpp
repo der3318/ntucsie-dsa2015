@@ -35,7 +35,7 @@ int map_read(char filename[], Data& mydata)
 		unsigned long long URL = 0;
 		while(*data_start != '\t')	click = click * 10 + ((*data_start++) - '0');
 		data_start++;
-		while(*data_start != '\t')	impression = click * 10 + ((*data_start++) - '0');
+		while(*data_start != '\t')	impression = impression * 10 + ((*data_start++) - '0');
 		data_start++;
 		while(*data_start != '\t')	URL = URL * 10 + ((*data_start++) - '0');
 		data_start++;

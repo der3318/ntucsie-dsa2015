@@ -1,4 +1,4 @@
-target = hw3_1 hw3_2
+target = 3_4_1.out 3_4_2.out
 CFLAGS = -O3 -Wall
 CPPFLAGS = -O3 -std=c++11 -Wall
 
@@ -10,17 +10,12 @@ all: $(target)
 %: %.cpp
 	g++ $(CPPFLAGS) $< -o $@
 
-hw3_1: hw3_1.cpp
-	g++ $(CPPFLAGS) hw3_1.cpp -o $@
+3_4_1.out: hw3_4_1.cpp
+	g++ $(CPPFLAGS) hw3_4_1.cpp -o $@
 
-hw3_2: hw3_2.cpp
-	g++ $(CPPFLAGS) hw3_2.cpp -o $@
+3_4_2.out: hw3_4_2.cpp
+	g++ $(CPPFLAGS) hw3_4_2.cpp -o $@
 
 clean:
 	rm -rf $(target)
 
-run1:
-	./hw3_1 < ./input > ./output
-
-run2:
-	./hw3_2 < ./input > ./output

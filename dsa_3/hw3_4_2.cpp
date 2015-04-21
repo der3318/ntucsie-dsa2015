@@ -25,12 +25,9 @@
 #define FAB 108
 
 /*
-
 Sign-Value Table
-			(m)	(p)
-Sign		-	+	*	/	+	-	(		s		c		e		l		p		r		f
+Sign		-	+	*	/	+	-	(	s	c	e	l	p	r	f
 Value		-12	-13	-20	-21	-30	-31	-100	-102	-103	-104	-105	-106	-107	-108
-
 */
 
 class Postfix
@@ -64,18 +61,18 @@ void toPostfix()
 		else if(infix[i] == '(' || infix[i] == 'm')	
 		{
 			op_stack.push( toInt[ (int)infix[i] ] );
-			printf("Push \"%s\" into the stack\n", toChar[ -op_stack.top() ]);
+			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 		}
 		else if(infix[i] == ')')
 		{
 			while(op_stack.top() > toInt[ (int)'(' ])
 			{
 				postfix[p++].c = op_stack.top();
-				printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ]);
+				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 				op_stack.pop();
 			}
 			if(op_stack.top() < toInt[ (int)'(' ])	postfix[p++].c = op_stack.top();
-			printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ]);
+			//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 			op_stack.pop();
 		}
 		else if(infix[i] == ',')
@@ -83,7 +80,7 @@ void toPostfix()
 			while(op_stack.top() > toInt[ (int)'(' ])
 			{
 				postfix[p++].c = op_stack.top();
-				printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ]);
+				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 				op_stack.pop();
 			}
 		}
@@ -93,7 +90,7 @@ void toPostfix()
 			if(infix[i + 2] == 'r')	pos = toInt[ (int)'r'];
 			if(infix[i + 3] != '(')	i++;
 			op_stack.push(pos);
-			printf("Push \"%s\" into the stack\n", toChar[ -op_stack.top() ]);
+			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 			i += 3;
 		}
 		else
@@ -101,18 +98,18 @@ void toPostfix()
 			while((!op_stack.empty()) && ((-op_stack.top()) / 10) <= ((-toInt[ (int)infix[i] ]) / 10))
 			{
 				postfix[p++].c = op_stack.top();
-				printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ]);
+				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 				op_stack.pop();
 			}
 			op_stack.push( toInt[ (int)infix[i] ] );
-			printf("Push \"%s\" into the stack\n", toChar[ -op_stack.top() ]);
+			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 		}
 		i++;
 	}
 	while(!op_stack.empty())
 	{
 		postfix[p++].c = op_stack.top();
-		printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ]);
+		//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 		op_stack.pop();
 	}
 	postfix[p].c = -1;
@@ -151,8 +148,8 @@ void toValue()
 		}
 		p++;
 	}
-	if(val_stack.size() != 1)	printf("Error Form.\n");
-	else	printf("RESULT: %lf\n", val_stack.top());
+	if(val_stack.size() != 1)	printf("Error Form\n");
+	else	printf("RESULT: %.6lf\n", val_stack.top());
 	return;
 }
 
@@ -162,7 +159,7 @@ int main()
 	toInt[(int)'-'] = -SUB;	strcpy(toChar[SUB], "-");
 	toInt[(int)'*'] = -MUL;	strcpy(toChar[MUL], "*");
 	toInt[(int)'/'] = -DIV;	strcpy(toChar[DIV], "/");
-	toInt[(int)'m'] = -MIN;	strcpy(toChar[MIN], "m");
+	toInt[(int)'m'] = -MIN;	strcpy(toChar[MIN], "-");
 	toInt[(int)'('] = -PAR; strcpy(toChar[PAR], "(");
 	toInt[(int)'s'] = -SIN;	strcpy(toChar[SIN], "sin");
 	toInt[(int)'c'] = -COS;	strcpy(toChar[COS], "cos");
@@ -187,13 +184,15 @@ int main()
 				infix[j++] = tmp[i];
 			}
 		infix[j] = '\n';
+		//printf("# transform from indix to postfix\n");
 		toPostfix();
-		printf("Postfix Expression: ");
-			for(int i = 0 ; postfix[i].c != -1 ; i++)
-			{
-				if(postfix[i].c >= 0)	printf("%lf ", postfix[i].v);
-				else printf("%s ", toChar[ (-postfix[i].c) ]);
-			}
+		//printf("# postfix expression transforming complete\n");
+		printf("Postfix Exp: %.6lf", postfix[0].v);
+		for(int i = 1 ; postfix[i].c != -1 ; i++)
+		{
+			if(postfix[i].c >= 0)	printf(" %.6lf", postfix[i].v);
+			else printf(" %s", toChar[ (-postfix[i].c) ]);
+		}
 		printf("\n");
 		toValue();
 	}

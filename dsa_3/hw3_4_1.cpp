@@ -16,7 +16,7 @@
 #define MOD 22
 #define ADD 30
 #define SUB 31
-#define SHL	40
+#define SHL 40
 #define SHR 41
 #define	BAN 50
 #define XOR 60
@@ -26,12 +26,9 @@
 #define PAR 100
 
 /*
-
 Sign-Value Table
-					(m)	(p)											(a)	(o)
 Sign		~	!	-	+	*	/	%	+	-	<<	>>	&	^	|	&&	||	(
 Value		-10	-11	-12	-13	-20	-21	-22	-30	-31	-40	-41	-50	-60	-70	-80	-90	-100
-
 */
 
 char infix[MAX],tmp[MAX], toChar[toChar_MAX][3];
@@ -52,17 +49,17 @@ void toPostfix()
 		else if(infix[i] == '(' || infix[i] == '~' || infix[i] == '!' || infix[i] == 'm')
 		{
 			op_stack.push( toInt[ (int)infix[i] ] );
-			printf("Push \"%s\" into the stack\n", toChar[ -op_stack.top() ]);
+			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 		}
 		else if(infix[i] == ')')
 		{
 			while(op_stack.top() != toInt[ (int)'(' ])
 			{
 				postfix[p++] = op_stack.top();
-				printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ] );
+				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 				op_stack.pop();
 			}
-			printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ] );
+			//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 			op_stack.pop();
 		}
 		else
@@ -77,18 +74,18 @@ void toPostfix()
 			while((!op_stack.empty()) && ((-op_stack.top()) / 10) <= ((-pos) / 10))
 			{
 				postfix[p++] = op_stack.top();
-				printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ] );
+				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 				op_stack.pop();
 			}
 			op_stack.push(pos);
-			printf("Push \"%s\" into the stack\n", toChar[ -op_stack.top() ]);
+			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 		}
 		i++;
 	}
 	while(!op_stack.empty())
 	{
 		postfix[p++] = op_stack.top();
-		printf("Pop \"%s\" from the stack\n", toChar[ -op_stack.top() ] );
+		//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 		op_stack.pop();
 	}
 	postfix[p] = -1;
@@ -129,7 +126,7 @@ void toValue()
 		}
 		p++;
 	}
-	if(val_stack.size() != 1)	printf("Error Form.\n");
+	if(val_stack.size() != 1)	printf("Error Form\n");
 	else	printf("RESULT: %d\n", val_stack.top());
 	return;
 }
@@ -146,7 +143,7 @@ int main()
 	toInt[(int)'|'] = -BOR;	strcpy(toChar[BOR], "|");
 	toInt[(int)'~'] = -BNT;	strcpy(toChar[BNT], "~");
 	toInt[(int)'!'] = -NOT;	strcpy(toChar[NOT], "!");
-	toInt[(int)'m'] = -MIN;	strcpy(toChar[MIN], "m");
+	toInt[(int)'m'] = -MIN;	strcpy(toChar[MIN], "-");
 	toInt[(int)'<'] = -SHL;	strcpy(toChar[SHL], "<<");
 	toInt[(int)'>'] = -SHR;	strcpy(toChar[SHR], ">>");
 	toInt[(int)'a'] = -AND;	strcpy(toChar[AND], "&&");
@@ -168,13 +165,15 @@ int main()
 				infix[j++] = tmp[i];
 			}
 		infix[j] = '\n';
+		//printf("# transform from indix to postfix\n");
 		toPostfix();
-		printf("Postfix Expression: ");
-			for(int i = 0 ; postfix[i] != -1 ; i++)
-			{
-				if(postfix[i] >= 0)	printf("%d ", postfix[i]);
-				else printf("%s ", toChar[ (-postfix[i]) ]);
-			}
+		//printf("# postfix expression transforming complete\n");
+		printf("Postfix Exp: %d", postfix[0]);
+		for(int i = 1 ; postfix[i] != -1 ; i++)
+		{
+			if(postfix[i] >= 0)	printf(" %d", postfix[i]);
+			else printf(" %s", toChar[ (-postfix[i]) ]);
+		}
 		printf("\n");
 		toValue();
 	}

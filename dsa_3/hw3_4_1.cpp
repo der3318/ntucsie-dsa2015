@@ -46,13 +46,14 @@ void toPostfix()
 			while(infix[i] <= '9' && infix[i] >= '0')	postfix[p] = postfix[p] * 10 + (int)(infix[i++] - '0');
 			p++;	i--;
 		}
-		else if(infix[i] == '(' || infix[i] == '~' || infix[i] == '!' || infix[i] == 'm')
+		else if(infix[i] == '(' || infix[i] == '~' || infix[i] == '!' || infix[i] == 'm' || infix[i] == 'u')
 		{
 			op_stack.push( toInt[ (int)infix[i] ] );
-			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
+			//printf("Encounter \"%s\":\n\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ], toChar[ -op_stack.top() ]);
 		}
 		else if(infix[i] == ')')
 		{
+			//printf("Encounter \")\":\n");
 			while(op_stack.top() != toInt[ (int)'(' ])
 			{
 				postfix[p++] = op_stack.top();
@@ -71,6 +72,7 @@ void toPostfix()
 				if(infix[i] == '&')	pos = -AND;
 				else if(infix[i] == '|')	pos = -OR;
 			}
+			//printf("Encounter \"%s\":\n", toChar[ -pos ]);
 			while((!op_stack.empty()) && ((-op_stack.top()) / 10) <= ((-pos) / 10))
 			{
 				postfix[p++] = op_stack.top();
@@ -82,6 +84,7 @@ void toPostfix()
 		}
 		i++;
 	}
+	//printf("Encounter nothing:\n");
 	while(!op_stack.empty())
 	{
 		postfix[p++] = op_stack.top();
@@ -106,6 +109,7 @@ void toValue()
 			if(postfix[p] == -BNT)	val_stack.push(~v_2);
 			else if(postfix[p] == -NOT)	val_stack.push(!v_2);
 			else if(postfix[p] == -MIN)	val_stack.push(-v_2);
+			else if(postfix[p] == -PLU)	val_stack.push(+v_2);
 			else
 			{
 				v_1 = val_stack.top();
@@ -143,6 +147,7 @@ int main()
 	toInt[(int)'|'] = -BOR;	strcpy(toChar[BOR], "|");
 	toInt[(int)'~'] = -BNT;	strcpy(toChar[BNT], "~");
 	toInt[(int)'!'] = -NOT;	strcpy(toChar[NOT], "!");
+	toInt[(int)'u'] = -PLU;	strcpy(toChar[PLU], "+");
 	toInt[(int)'m'] = -MIN;	strcpy(toChar[MIN], "-");
 	toInt[(int)'<'] = -SHL;	strcpy(toChar[SHL], "<<");
 	toInt[(int)'>'] = -SHR;	strcpy(toChar[SHR], ">>");
@@ -160,6 +165,7 @@ int main()
 					if(j == 0 || ((infix[j - 1] > '9' || infix[j - 1] < '0') && infix[j - 1] != ')'))
 					{
 						if(tmp[i] == '-')	infix[j++] = 'm';
+						else	infix[j++] = 'u';
 						continue;
 					}
 				infix[j++] = tmp[i];

@@ -58,13 +58,14 @@ void toPostfix()
 			while(infix[i] <= '9' && infix[i] >= '0')	postfix[p].v = postfix[p].v + power[index_pow++] * (int)(infix[i++] - '0');
 			p++;	i--;
 		}
-		else if(infix[i] == '(' || infix[i] == 'm')	
+		else if(infix[i] == '(' || infix[i] == 'm' || infix[i] == 'u')	
 		{
 			op_stack.push( toInt[ (int)infix[i] ] );
-			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
+			//printf("Encounter \"%s\":\n\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ], toChar[ -op_stack.top() ]);
 		}
 		else if(infix[i] == ')')
 		{
+			//printf("Encounter \")\":\n");
 			while(op_stack.top() > toInt[ (int)'(' ])
 			{
 				postfix[p++].c = op_stack.top();
@@ -77,6 +78,7 @@ void toPostfix()
 		}
 		else if(infix[i] == ',')
 		{
+			//printf("Encounter \",\":\n");
 			while(op_stack.top() > toInt[ (int)'(' ])
 			{
 				postfix[p++].c = op_stack.top();
@@ -90,11 +92,13 @@ void toPostfix()
 			if(infix[i + 2] == 'r')	pos = toInt[ (int)'r'];
 			if(infix[i + 3] != '(')	i++;
 			op_stack.push(pos);
+			//printf("Encounter \"%s\":\n", toChar[ -pos ]);
 			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 			i += 3;
 		}
 		else
 		{
+			//printf("Encounter \"%s\":\n", toChar[ -toInt[ (int)infix[i] ] ]);
 			while((!op_stack.empty()) && ((-op_stack.top()) / 10) <= ((-toInt[ (int)infix[i] ]) / 10))
 			{
 				postfix[p++].c = op_stack.top();
@@ -106,6 +110,7 @@ void toPostfix()
 		}
 		i++;
 	}
+	//printf("Encounter nothing:\n");
 	while(!op_stack.empty())
 	{
 		postfix[p++].c = op_stack.top();
@@ -135,6 +140,7 @@ void toValue()
 			else if(postfix[p].c == -LOG)	val_stack.push(log(v_2));
 			else if(postfix[p].c == -SQR)	val_stack.push(sqrt(v_2));
 			else if(postfix[p].c == -FAB)	val_stack.push(fabs(v_2));
+			else if(postfix[p].c == -PLU)	val_stack.push(+v_2);
 			else
 			{
 				v_1 = val_stack.top();
@@ -159,6 +165,7 @@ int main()
 	toInt[(int)'-'] = -SUB;	strcpy(toChar[SUB], "-");
 	toInt[(int)'*'] = -MUL;	strcpy(toChar[MUL], "*");
 	toInt[(int)'/'] = -DIV;	strcpy(toChar[DIV], "/");
+	toInt[(int)'u'] = -PLU;	strcpy(toChar[PLU], "+");
 	toInt[(int)'m'] = -MIN;	strcpy(toChar[MIN], "-");
 	toInt[(int)'('] = -PAR; strcpy(toChar[PAR], "(");
 	toInt[(int)'s'] = -SIN;	strcpy(toChar[SIN], "sin");
@@ -179,6 +186,7 @@ int main()
 					if(j == 0 || ((infix[j - 1] > '9' || infix[j - 1] < '0') && infix[j - 1] != ')'))
 					{
 						if(tmp[i] == '-')	infix[j++] = 'm';
+						else	infix[j++] = 'u';
 						continue;
 					}
 				infix[j++] = tmp[i];

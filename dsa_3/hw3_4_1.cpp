@@ -49,18 +49,18 @@ void toPostfix()
 		else if(infix[i] == '(' || infix[i] == '~' || infix[i] == '!' || infix[i] == 'm' || infix[i] == 'u')
 		{
 			op_stack.push( toInt[ (int)infix[i] ] );
-			//printf("Encounter \"%s\":\n\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ], toChar[ -op_stack.top() ]);
+			printf("Encounter \"%s\":\n\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ], toChar[ -op_stack.top() ]);
 		}
 		else if(infix[i] == ')')
 		{
-			//printf("Encounter \")\":\n");
+			printf("Encounter \")\":\n");
 			while(op_stack.top() != toInt[ (int)'(' ])
 			{
 				postfix[p++] = op_stack.top();
-				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
+				printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 				op_stack.pop();
 			}
-			//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
+			printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 			op_stack.pop();
 		}
 		else
@@ -72,23 +72,23 @@ void toPostfix()
 				if(infix[i] == '&')	pos = -AND;
 				else if(infix[i] == '|')	pos = -OR;
 			}
-			//printf("Encounter \"%s\":\n", toChar[ -pos ]);
+			printf("Encounter \"%s\":\n", toChar[ -pos ]);
 			while((!op_stack.empty()) && ((-op_stack.top()) / 10) <= ((-pos) / 10))
 			{
 				postfix[p++] = op_stack.top();
-				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
+				printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 				op_stack.pop();
 			}
 			op_stack.push(pos);
-			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
+			printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 		}
 		i++;
 	}
-	//printf("Encounter nothing:\n");
+	printf("Encounter nothing:\n");
 	while(!op_stack.empty())
 	{
 		postfix[p++] = op_stack.top();
-		//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
+		printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ] );
 		op_stack.pop();
 	}
 	postfix[p] = -1;
@@ -156,7 +156,7 @@ int main()
 	toInt[(int)'('] = -PAR;	strcpy(toChar[PAR], "(");
 	while(fgets(tmp, MAX, stdin) != NULL)
 	{
-		if(tmp[1] == '\0')	break;
+		if(tmp[1] == '\0')	continue;
 		int j = 0;
 		for(int i = 0 ; tmp[i] != '\n' ; i++)
 			if(tmp[i] != ' ')
@@ -171,9 +171,9 @@ int main()
 				infix[j++] = tmp[i];
 			}
 		infix[j] = '\n';
-		//printf("# transform from indix to postfix\n");
+		printf("# transform from infix to postfix\n");
 		toPostfix();
-		//printf("# postfix expression transforming complete\n");
+		printf("# postfix expression transforming complete\n");
 		printf("Postfix Exp: %d", postfix[0]);
 		for(int i = 1 ; postfix[i] != -1 ; i++)
 		{

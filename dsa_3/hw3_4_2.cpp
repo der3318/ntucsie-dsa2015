@@ -47,12 +47,12 @@ void toPostfix()
 	int i = 0, p = 0;
 	while(infix[i] != '\n')
 	{
-		if(infix[i] <= '9' && infix[i] >= '0')
+		if( (infix[i] <= '9' && infix[i] >= '0') || infix[i] == '.' )
 		{
 			double power[pow_MAX] = {0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001};
 			int index_pow = 0;
 			postfix[p].c = 1;
-			postfix[p].v = (int)(infix[i++] - '0');
+			postfix[p].v = 0;
 			while(infix[i] <= '9' && infix[i] >= '0')	postfix[p].v = postfix[p].v * 10 + (int)(infix[i++] - '0');
 			if(infix[i] == '.')	i++;
 			while(infix[i] <= '9' && infix[i] >= '0')	postfix[p].v = postfix[p].v + power[index_pow++] * (int)(infix[i++] - '0');
@@ -61,28 +61,28 @@ void toPostfix()
 		else if(infix[i] == '(' || infix[i] == 'm' || infix[i] == 'u')	
 		{
 			op_stack.push( toInt[ (int)infix[i] ] );
-			//printf("Encounter \"%s\":\n\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ], toChar[ -op_stack.top() ]);
+			printf("Encounter \"%s\":\n\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ], toChar[ -op_stack.top() ]);
 		}
 		else if(infix[i] == ')')
 		{
-			//printf("Encounter \")\":\n");
+			printf("Encounter \")\":\n");
 			while(op_stack.top() > toInt[ (int)'(' ])
 			{
 				postfix[p++].c = op_stack.top();
-				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
+				printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 				op_stack.pop();
 			}
 			if(op_stack.top() < toInt[ (int)'(' ])	postfix[p++].c = op_stack.top();
-			//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
+			printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 			op_stack.pop();
 		}
 		else if(infix[i] == ',')
 		{
-			//printf("Encounter \",\":\n");
+			printf("Encounter \",\":\n");
 			while(op_stack.top() > toInt[ (int)'(' ])
 			{
 				postfix[p++].c = op_stack.top();
-				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
+				printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 				op_stack.pop();
 			}
 		}
@@ -92,29 +92,29 @@ void toPostfix()
 			if(infix[i + 2] == 'r')	pos = toInt[ (int)'r'];
 			if(infix[i + 3] != '(')	i++;
 			op_stack.push(pos);
-			//printf("Encounter \"%s\":\n", toChar[ -pos ]);
-			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
+			printf("Encounter \"%s\":\n", toChar[ -pos ]);
+			printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 			i += 3;
 		}
 		else
 		{
-			//printf("Encounter \"%s\":\n", toChar[ -toInt[ (int)infix[i] ] ]);
+			printf("Encounter \"%s\":\n", toChar[ -toInt[ (int)infix[i] ] ]);
 			while((!op_stack.empty()) && ((-op_stack.top()) / 10) <= ((-toInt[ (int)infix[i] ]) / 10))
 			{
 				postfix[p++].c = op_stack.top();
-				//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
+				printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 				op_stack.pop();
 			}
 			op_stack.push( toInt[ (int)infix[i] ] );
-			//printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
+			printf("\tPush \"%s\" Into The Stack\n", toChar[ -op_stack.top() ]);
 		}
 		i++;
 	}
-	//printf("Encounter nothing:\n");
+	printf("Encounter nothing:\n");
 	while(!op_stack.empty())
 	{
 		postfix[p++].c = op_stack.top();
-		//printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
+		printf("\tPop \"%s\" From The Stack\n", toChar[ -op_stack.top() ]);
 		op_stack.pop();
 	}
 	postfix[p].c = -1;
@@ -177,7 +177,7 @@ int main()
 	toInt[(int)'f'] = -FAB;	strcpy(toChar[FAB], "fabs");
 	while(fgets(tmp, MAX, stdin) != NULL)
 	{
-		if(tmp[1] == '\0')	break;
+		if(tmp[1] == '\0')	continue;
 		int j = 0;
 		for(int i = 0 ; tmp[i] != '\n' ; i++)
 			if(tmp[i] != ' ')
@@ -192,9 +192,9 @@ int main()
 				infix[j++] = tmp[i];
 			}
 		infix[j] = '\n';
-		//printf("# transform from indix to postfix\n");
+		printf("# transform from infix to postfix\n");
 		toPostfix();
-		//printf("# postfix expression transforming complete\n");
+		printf("# postfix expression transforming complete\n");
 		printf("Postfix Exp: %.6lf", postfix[0].v);
 		for(int i = 1 ; postfix[i].c != -1 ; i++)
 		{

@@ -1,8 +1,8 @@
-Postfix Exp: 4.000000 - 3.141500 - sin 2.000000 pow 3.141500 + cos 2.000000 pow + exp log * fabs sqrt -
+Postfix Exp: 3.000000 - 1.000000 + 3.141500 - sin 2.000000 pow 3.141500 + cos 2.000000 pow + exp log * - fabs sqrt -
 RESULT: -2.000000
 Postfix Exp: 1.400000 + 11.000000 10.900000 - * sqrt 0.140000 0.280000 pow * 0.283300 - pow 77.100000 0.379000 log 1.100000 + exp * +
 RESULT: 89.328564
-Postfix Exp: 79984.100000 sin 79984.100000 cos 1.000000 - pow * 2.000000 pow 1.100000 + 79984.100000 cos 2.000000 - pow -
+Postfix Exp: 79984.100000 sin 79984.100000 cos 1.000000 - pow * 2.000000 pow 0.100000 + 1.000000 + 79984.100000 cos 1.000000 3.000000 - pow -
 RESULT: 0.100000
 Postfix Exp: 0.000100 - sin fabs sqrt 7899990.077789 * 2.003000 exp log 1.000000 - pow * 1.010000 - exp cos +
 RESULT: 39441.723575

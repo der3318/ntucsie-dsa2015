@@ -49,13 +49,12 @@ void toPostfix()
 	{
 		if( (infix[i] <= '9' && infix[i] >= '0') || infix[i] == '.' )
 		{
-			double power[pow_MAX] = {0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001};
-			int index_pow = 0;
+			int index_pow = -1;
 			postfix[p].c = 1;
 			postfix[p].v = 0;
 			while(infix[i] <= '9' && infix[i] >= '0')	postfix[p].v = postfix[p].v * 10 + (int)(infix[i++] - '0');
 			if(infix[i] == '.')	i++;
-			while(infix[i] <= '9' && infix[i] >= '0')	postfix[p].v = postfix[p].v + power[index_pow++] * (int)(infix[i++] - '0');
+			while(infix[i] <= '9' && infix[i] >= '0')	postfix[p].v = postfix[p].v + pow(10, index_pow--)  * (int)(infix[i++] - '0');
 			p++;	i--;
 		}
 		else if(infix[i] == '(' || infix[i] == 'm' || infix[i] == 'u')	
@@ -183,7 +182,7 @@ int main()
 			if(tmp[i] != ' ')
 			{
 				if(tmp[i] == '+' || tmp[i] == '-')
-					if(j == 0 || ((infix[j - 1] > '9' || infix[j - 1] < '0') && infix[j - 1] != ')'))
+					if(j == 0 || ((infix[j - 1] > '9' || infix[j - 1] < '0') && infix[j - 1] != ')' && infix[j - 1] != '.'))
 					{
 						if(tmp[i] == '-')	infix[j++] = 'm';
 						else	infix[j++] = 'u';

@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#define MAX_DATA 10000
+#define MAX_DATA 2000
 #define MAX_LEN 1000000
 
 class Case
@@ -20,7 +20,7 @@ int max_index = 0;
 double e = 0;
 int index_tmp = 0;
 
-bool cmp(int a, int b){	return cases[a].data[index_tmp] < cases[b].data[index_tmp];	}
+bool cmp(int& a, int& b){	return cases[a].data[index_tmp] < cases[b].data[index_tmp];	}
 double confusion(int a, int b){	return 1 - pow((double)a / (a + b), 2) - pow((double)b / (a + b), 2);	}
 
 void print_decision(std::vector<int> toCheck, int now)
@@ -28,7 +28,7 @@ void print_decision(std::vector<int> toCheck, int now)
 	int y = 0, index_hold = -1, size = toCheck.size();
 	double min = 1, value_hold = 0;
 	for(int i = 0 ; i < size ; i++)	if(cases[ toCheck[i] ].yn == 1)	y++;
-	for(index_tmp = 1 ; index_tmp <= max_index ; index_tmp++)
+	for(index_tmp = 0 ; index_tmp <= max_index ; index_tmp++)
 	{
 		std::sort(toCheck.begin(), toCheck.end(), cmp);
 		int y_tmp = (cases[ toCheck[0] ].yn == 1 ? 1 : 0);
@@ -77,10 +77,10 @@ int main(int argc, char *argv[])
 	char c_tmp[MAX_LEN];
 	while(fgets(c_tmp, MAX_LEN, fin) != 0)
 	{
+		if(c_tmp[0] == '\n')	continue;
 		Case case_new;
 		case_new.data = new double[MAX_DATA];
 		for(int i = 0 ; i < MAX_DATA ; i++)	case_new.data[i] = 0;
-		if(c_tmp[0] == '\n')	continue;
 		c_tmp[ strlen(c_tmp) - 1 ] = '\0';
 		char *cut = strtok(c_tmp, " ");
 		case_new.yn = atoi(cut);

@@ -78,20 +78,6 @@ int int_compare(const void *pa, const void *pb, void *param)
 	else return 0;
 }
 
-void print(const struct avl_node *node)
-{
-	if(node == NULL)	return;
-	printf("%d ", node->avl_data);
-	if(node->avl_link[0]!=NULL || node->avl_link[1]!=NULL){
-		putchar('(');
-		print(node->avl_link[0]);
-		putchar(',');
-		putchar(' ');
-		print(node->avl_link[1]);
-		putchar(')');
-	}
-}
-
 int main()
 {
 	int n = 0, m = 0;

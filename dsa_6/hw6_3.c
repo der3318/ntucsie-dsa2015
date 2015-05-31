@@ -15,8 +15,8 @@ void find_max_game(const struct avl_node *node)
 	{
 		max_game += (node->avl_cnode[0]);
 		dollar -= (node->avl_sum[0]);
-		int tmp = dollar / (node->avl_data);
-		if(tmp > node->avl_cnt)	tmp = node->avl_cnt;
+		long long int tmp = dollar / (node->avl_data);
+		if(tmp > (long long int)node->avl_cnt)	tmp = node->avl_cnt;
 		max_game += tmp;
 		dollar -= (tmp * (node->avl_data));
 		if(tmp == node->avl_cnt)
@@ -40,7 +40,7 @@ void merge_tree(struct avl_node *node, struct avl_table *new_tree)
 		merge_tree(node->avl_link[0], new_tree);
 		merge_tree(node->avl_link[1], new_tree);
 	}
-	avl_probe(new_tree, node->avl_data);
+	for(int i = 0 ; i < node->avl_cnt ; i++)	avl_probe(new_tree, node->avl_data);
 	free(node);
 }
 

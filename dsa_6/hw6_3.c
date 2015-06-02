@@ -19,7 +19,7 @@ void find_max_game(const struct avl_node *node)
 		if(tmp > (long long int)node->avl_cnt)	tmp = node->avl_cnt;
 		max_game += tmp;
 		dollar -= (tmp * (node->avl_data));
-		if(tmp == node->avl_cnt)
+		if(tmp == (long long int)node->avl_cnt)
 		{
 			if((long long int)(node->avl_sum[1]) <= dollar)
 			{

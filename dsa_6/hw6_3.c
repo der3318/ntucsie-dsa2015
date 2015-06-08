@@ -4,14 +4,14 @@
 #include "avl_ntudsa.h"
 #define MAX 100000
 
-int father[MAX], rank[MAX], f_s[MAX], s_f[MAX];
+int father[MAX], rank[MAX], s_f[MAX];
 struct avl_table *tree[MAX];
 long long int dollar, max_game;
 
 void find_max_game(const struct avl_node *node)
 {
 	if(node == NULL)	return;
-	if((long long int)(node->avl_sum[0]) <= dollar)
+	if((node->avl_sum[0]) <= dollar)
 	{
 		max_game += (node->avl_cnode[0]);
 		dollar -= (node->avl_sum[0]);
@@ -21,7 +21,7 @@ void find_max_game(const struct avl_node *node)
 		dollar -= (tmp * (node->avl_data));
 		if(tmp == (long long int)node->avl_cnt)
 		{
-			if((long long int)(node->avl_sum[1]) <= dollar)
+			if((node->avl_sum[1]) <= dollar)
 			{
 				max_game += (node->avl_cnode[1]);
 				dollar -= (node->avl_sum[1]);
@@ -46,8 +46,8 @@ void merge_tree(struct avl_node *node, struct avl_table *new_tree)
 
 int get_father(int x)
 {
-	if(father[x] == x)	return x;
-	return get_father(father[x]);
+	while(father[x] != x)	x = father[x];
+	return x;
 }
 
 void merge_set(int fx, int fy, int o)
@@ -55,16 +55,24 @@ void merge_set(int fx, int fy, int o)
 	if(rank[fx] > rank[fy])
 	{
 		father[fy] = fx;
-		f_s[o] = fx;
 		s_f[fx] = o;
-		merge_tree(tree[fy]->avl_root, tree[fx]);
+		if(tree[fx]->avl_count > tree[fy]->avl_count)	merge_tree(tree[fy]->avl_root, tree[fx]);
+		else	
+		{
+			merge_tree(tree[fx]->avl_root, tree[fy]);
+			tree[fx] = tree[fy];
+		}
 	}
 	else
 	{
 		father[fx] = fy;
-		f_s[o] = fy;
 		s_f[fy] = o;
-		merge_tree(tree[fx]->avl_root, tree[fy]);
+		if(tree[fx]->avl_count > tree[fy]->avl_count)
+		{
+			merge_tree(tree[fy]->avl_root, tree[fx]);
+			tree[fy] = tree[fx];
+		}
+		else	merge_tree(tree[fx]->avl_root, tree[fy]);
 		if(rank[fx] == rank[fy])	rank[fy]++;
 	}
 }
@@ -90,7 +98,6 @@ int main()
 		tree[i] = avl_create(int_compare, NULL, NULL);
 		avl_probe(tree[i], price);
 		father[i] = i;
-		f_s[i] = i;
 		s_f[i] = i;
 	}
 	for(int i = 0 ; i < m ; i++)

@@ -1,0 +1,36 @@
+create 0 0
+login 0 0
+deposit 5
+create 1 1
+login 1 1
+deposit 5
+create 2 2
+login 2 2
+deposit 0
+create 3 3
+login 3 3
+deposit 4
+create 4 4
+login 4 4
+deposit 4
+login 0 0
+deposit 4
+login 2 2
+delete 0 0
+login 3 3
+create 0 0
+transfer 0 1
+transfer 4 2
+merge 4 4 2 2
+merge 3 3 4 4
+create 2 2
+login 1 1
+login 3 3
+create 4 4
+transfer 1 6
+delete 1 1
+delete 2 2
+delete 0 0
+delete 4 4
+login 3 3
+search 4
